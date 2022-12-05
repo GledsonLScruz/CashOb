@@ -1,0 +1,16 @@
+import 'package:flutter/src/widgets/container.dart';
+import 'package:flutter/src/widgets/framework.dart';
+
+class SelectionPage extends StatefulWidget {
+  const SelectionPage({super.key});
+
+  @override
+  State<SelectionPage> createState() => _SelectionPageState();
+}
+
+class _SelectionPageState extends State<SelectionPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
