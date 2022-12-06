@@ -1,5 +1,6 @@
 import 'package:cashob/pages/details_page.dart';
 import 'package:cashob/pages/home_page.dart';
+import 'package:cashob/pages/new_onboarding_page.dart';
 import 'package:cashob/pages/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -36,7 +37,7 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'My Smart App',
-      theme: ThemeData(primarySwatch: Colors.green),
+      theme: ThemeData(primarySwatch: Colors.purple),
       routeInformationParser: Modular.routeInformationParser,
       routerDelegate: Modular.routerDelegate,
       debugShowCheckedModeBanner: false,
