@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:cashob/pages/model/Currency.dart';
+import 'package:cashob/pages/widgets/currency_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatelessWidget {
@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.all(2.0),
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, i) {
-                    return Item(meter: snapshot.data![i]);
+                    return CurrencyItem(currency: snapshot.data![i]);
                     //onDelete, onEdit);
                   },
                 )
@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
 Future<List<Currency>> fetchCurrencies() async {
   const apiHost = 'https://api.frankfurter.app';
   final currencies = await http.get(Uri.parse('$apiHost/currencies'));
-  final values = await http.get(Uri.parse('$apiHost/latest'));
+  final values = await http.get(Uri.parse('$apiHost/latest?from=BRL'));
 
   if (currencies.statusCode == 200 && values.statusCode == 200) {
     List<Currency> listOfCurrencies = [];
@@ -70,22 +70,4 @@ double convertDouble(dynamic e) {
     }
   }
   return result;
-}
-
-class Item extends StatelessWidget {
-  Currency meter;
-  Item({super.key, required this.meter});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(children: [
-        SvgPicture.asset('assets/flags/${meter.getCode()}.svg',
-            height: 50, width: 50),
-        Text("${meter.getName()}"),
-        Text("${meter.getCode()}"),
-        Text("${meter.getValue()}"),
-      ]),
-    );
-  }
 }

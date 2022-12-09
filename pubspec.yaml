@@ -36,6 +36,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   shared_preferences: ^2.0.12
   flutter_svg: '1.1.6'
+  google_fonts: ^2.1.0 
   
 
 
