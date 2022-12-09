@@ -1,9 +1,8 @@
 import 'dart:convert';
 
+import 'package:cashob/pages/model/Currency.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatelessWidget {
@@ -11,63 +10,82 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<Album> data = fetchAlbum();
-
+    Future<List<Currency>> currencies = fetchCurrencies();
     return SafeArea(
-      child: Scaffold(
-        body: GestureDetector(
-            onTap: () {
-              Modular.to.navigate("/details");
-            },
-            child: FutureBuilder<Album>(
-              future: data,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data!.title);
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-
-                // By default, show a loading spinner.
-                return const CircularProgressIndicator();
-              },
-            )),
+        child: Scaffold(
+      body: FutureBuilder<List<Currency>>(
+        future: currencies,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  padding: const EdgeInsets.all(2.0),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, i) {
+                    return Item(meter: snapshot.data![i]);
+                    //onDelete, onEdit);
+                  },
+                )
+              : Text('${snapshot.error}');
+        },
       ),
-    );
+    ));
   }
 }
 
-Future<Album> fetchAlbum() async {
-  final response = await http
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
+Future<List<Currency>> fetchCurrencies() async {
+  const apiHost = 'https://api.frankfurter.app';
+  final currencies = await http.get(Uri.parse('$apiHost/currencies'));
+  final values = await http.get(Uri.parse('$apiHost/latest'));
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Album.fromJson(jsonDecode(response.body));
+  if (currencies.statusCode == 200 && values.statusCode == 200) {
+    List<Currency> listOfCurrencies = [];
+    jsonDecode(currencies.body).forEach((key, value) {
+      listOfCurrencies
+          .add(Currency(name: value.toString(), code: key.toString()));
+    });
+
+    Map valuesmap = jsonDecode(values.body)["rates"];
+
+    listOfCurrencies.forEach((currency) {
+      currency.setValue(valuesmap[currency.getCode()] == null
+          ? -1.0
+          : convertDouble(valuesmap[currency.getCode()]));
+    });
+
+    return listOfCurrencies;
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
     throw Exception('Failed to load album');
   }
 }
 
-class Album {
-  final int userId;
-  final int id;
-  final String title;
+double convertDouble(dynamic e) {
+  dynamic result;
+  if (e != null) {
+    if (e is String) {
+      result = double.parse(e);
+    } else if (e is int) {
+      result = e.toDouble();
+    } else if (e is double) {
+      result = e;
+    }
+  }
+  return result;
+}
 
-  const Album({
-    required this.userId,
-    required this.id,
-    required this.title,
-  });
+class Item extends StatelessWidget {
+  Currency meter;
+  Item({super.key, required this.meter});
 
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(children: [
+        SvgPicture.asset('assets/flags/${meter.getCode()}.svg',
+            height: 50, width: 50),
+        Text("${meter.getName()}"),
+        Text("${meter.getCode()}"),
+        Text("${meter.getValue()}"),
+      ]),
     );
   }
 }
