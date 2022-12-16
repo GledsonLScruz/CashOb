@@ -36,18 +36,18 @@ class _CurrencyItemState extends State<CurrencyItem> {
                 height: 40,
                 width: 40,
                 child: SvgPicture.asset(
-                    'assets/flags/${widget.currency.getCode()}.svg')),
+                    'assets/flags/${widget.currency.code}.svg')),
             SizedBox(
               width: 15,
             ),
             Row(
               children: [
                 Text(
-                  '${widget.currency.getName()}',
+                  '${widget.currency.name}',
                   style: TextStyle(color: Colors.black, fontSize: 14),
                 ),
                 Text(
-                  ' - ${widget.currency.getCode()}',
+                  ' - ${widget.currency.code}',
                   style: TextStyle(color: Colors.black38),
                 )
               ],
@@ -55,7 +55,7 @@ class _CurrencyItemState extends State<CurrencyItem> {
             SizedBox(
               width: 35,
             ),
-            Text('${widget.currency.getValue()}'),
+            Text('${widget.currency.value}'),
           ],
         ),
       ),

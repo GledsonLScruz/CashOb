@@ -1,6 +1,8 @@
+import 'package:cashob/pages/about_page.dart';
 import 'package:cashob/pages/details_page.dart';
 import 'package:cashob/pages/home_page.dart';
 import 'package:cashob/pages/onboarding_page.dart';
+import 'package:cashob/pages/select_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,9 +25,13 @@ class AppModule extends Module {
 
   @override
   List<ModularRoute> get routes => [
-        //ChildRoute("/",child: (context, args) => showHome ? HomePage() : OnBoardingPage()),
-        ChildRoute("/", child: (context, args) => const HomePage()),
+        ChildRoute("/",
+            child: (context, args) =>
+                showHome ? HomePage() : const OnBoardingPage()),
+        ChildRoute("/home", child: (context, args) => HomePage()),
         ChildRoute("/details", child: (context, args) => const DetailPage()),
+        ChildRoute("/select", child: (context, args) => const SelectPage()),
+        ChildRoute("/about", child: (context, args) => const AboutPage())
       ];
 }
 
