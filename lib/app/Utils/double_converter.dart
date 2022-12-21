@@ -1,4 +1,4 @@
-double convertDouble(dynamic e) {
+double? convertDouble(dynamic e) {
   dynamic result;
   if (e != null) {
     if (e is String) {
@@ -8,6 +8,8 @@ double convertDouble(dynamic e) {
     } else if (e is double) {
       result = e;
     }
+  } else {
+    result = null;
   }
   return result;
 }

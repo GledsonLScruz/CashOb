@@ -7,7 +7,7 @@ import '../repository/currencies_repository.dart';
 import '../widgets/selecting_currency_item.dart';
 
 class SelectPage extends StatefulWidget {
-  CurrenciesRepository repo = CurrenciesRepository();
+  CurrenciesRepository repo = Modular.get<CurrenciesRepository>();
   SelectPage({super.key});
 
   @override
@@ -19,7 +19,7 @@ class _SelectPageState extends State<SelectPage> {
 
   @override
   void initState() {
-    currencies = widget.repo.getCurrenciesToSelect();
+    currencies = widget.repo.getAllCurrencies();
     super.initState();
   }
 
@@ -39,10 +39,7 @@ class _SelectPageState extends State<SelectPage> {
                           currency: snapshot.data![i],
                           onClick: (currency) async {
                             setState(() async {
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              prefs.setString(
-                                  'selectedCurrency', '${currency.code}');
+                              widget.repo.changeSelectedCurrency(currency);
                               Modular.to.pop();
                             });
                           });

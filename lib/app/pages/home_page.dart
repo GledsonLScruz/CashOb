@@ -9,7 +9,8 @@ import '../widgets/home_currency_item.dart';
 import '../widgets/selected_currency_item.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final repo = Modular.get<CurrenciesRepository>();
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class HomePage extends StatelessWidget {
         actions: [
           GestureDetector(
               onTap: () {
-                Modular.to.pushNamed("/select");
+                Modular.to.pushNamed("/about");
               },
               child: const Padding(
                 padding: EdgeInsets.all(3.0),
@@ -29,14 +30,14 @@ class HomePage extends StatelessWidget {
               ))
         ],
       ),
-      body: HomePageContent(),
+      body: HomePageContent(repo: repo),
     ));
   }
 }
 
 class HomePageContent extends StatefulWidget {
-  CurrenciesRepository repo = CurrenciesRepository();
-  HomePageContent({super.key});
+  CurrenciesRepository repo;
+  HomePageContent({super.key, required this.repo});
 
   @override
   State<HomePageContent> createState() => _HomePageContentState();
@@ -48,7 +49,7 @@ class _HomePageContentState extends State<HomePageContent> {
 
   @override
   void initState() {
-    currencies = widget.repo.getCurrencies();
+    currencies = widget.repo.getNonSelectedCurrencies();
     selectedCurrency = widget.repo.getSelectedCurrency();
     super.initState();
   }
@@ -61,26 +62,23 @@ class _HomePageContentState extends State<HomePageContent> {
         children: [
           SizedBox(
             height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                Modular.to.navigate("/select");
+            child: FutureBuilder<Currency>(
+              future: selectedCurrency,
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? ListView.builder(
+                        padding: const EdgeInsets.all(2.0),
+                        itemCount: 1,
+                        itemBuilder: (context, i) {
+                          return SelectedCurrency(
+                              onClick: () {
+                                Modular.to.navigate("/select");
+                              },
+                              currency: snapshot.data!);
+                        },
+                      )
+                    : Text('${snapshot.error}');
               },
-              child: FutureBuilder<Currency>(
-                future: selectedCurrency,
-                builder: (context, snapshot) {
-                  return snapshot.hasData
-                      ? ListView.builder(
-                          padding: const EdgeInsets.all(2.0),
-                          itemCount: 1,
-                          itemBuilder: (context, i) {
-                            return SelectedCurrency(
-                                onClick: () {}, currency: snapshot.data!);
-                            //onDelete, onEdit);
-                          },
-                        )
-                      : Text('${snapshot.error}');
-                },
-              ),
             ),
           ),
           Flexible(
@@ -93,7 +91,6 @@ class _HomePageContentState extends State<HomePageContent> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, i) {
                           return CurrencyItem(currency: snapshot.data![i]);
-                          //onDelete, onEdit);
                         },
                       )
                     : Text('${snapshot.error}');
