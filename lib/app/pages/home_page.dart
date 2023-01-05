@@ -7,6 +7,7 @@ import '../model/Currency.dart';
 import '../repository/currencies_repository.dart';
 import '../widgets/home_currency_item.dart';
 import '../widgets/selected_currency_item.dart';
+import '../widgets/selecting_currency_item.dart';
 
 class HomePage extends StatelessWidget {
   final repo = Modular.get<CurrenciesRepository>();
@@ -45,13 +46,13 @@ class HomePageContent extends StatefulWidget {
 
 class _HomePageContentState extends State<HomePageContent> {
   late Future<List<Currency>> currencies;
-  late Future<Currency> selectedCurrency;
+  late Future<String> selectedCurrency;
 
   @override
   void initState() {
-    currencies = widget.repo.getNonSelectedCurrencies();
-    selectedCurrency = widget.repo.getSelectedCurrency();
     super.initState();
+    currencies = widget.repo.getAllCurrencies();
+    selectedCurrency = widget.repo.getSelectedCurrency();
   }
 
   @override
@@ -62,43 +63,85 @@ class _HomePageContentState extends State<HomePageContent> {
         children: [
           SizedBox(
             height: 50,
-            child: FutureBuilder<Currency>(
-              future: selectedCurrency,
-              builder: (context, snapshot) {
-                return snapshot.hasData
-                    ? ListView.builder(
-                        padding: const EdgeInsets.all(2.0),
-                        itemCount: 1,
-                        itemBuilder: (context, i) {
-                          return SelectedCurrency(
-                              onClick: () {
-                                Modular.to.navigate("/select");
-                              },
-                              currency: snapshot.data!);
-                        },
-                      )
-                    : Text('${snapshot.error}');
+            child: GestureDetector(
+              onTap: () {
+                Modular.to.navigate('/select');
               },
+              child: FutureBuilder<String>(
+                future: selectedCurrency,
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? SelectedCurrency(currency: snapshot.data!)
+                      : Text('${snapshot.error}');
+                },
+              ),
             ),
           ),
           Flexible(
             child: FutureBuilder<List<Currency>>(
               future: currencies,
               builder: (context, snapshot) {
-                return snapshot.hasData
-                    ? ListView.builder(
-                        padding: const EdgeInsets.all(2.0),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, i) {
-                          return CurrencyItem(currency: snapshot.data![i]);
-                        },
-                      )
-                    : Text('${snapshot.error}');
+                return RefreshIndicator(
+                    child: _listView(snapshot),
+                    onRefresh: () async {
+                      List<Currency> listCurrencies =
+                          await widget.repo.getAllCurrencies();
+                      setState(() {
+                        currencies = Future.value(listCurrencies);
+                      });
+                    });
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _listView(AsyncSnapshot snapshot) {
+    if (snapshot.hasData) {
+      return ListView.builder(
+        padding: const EdgeInsets.all(2.0),
+        itemCount: snapshot.data.length,
+        itemBuilder: (context, index) {
+          return CurrencyItem(currency: snapshot.data![index]);
+        },
+      );
+    } else {
+      return const Center(
+        child: Text('Loading data...'),
+      );
+    }
+  }
+
+  void _onButtonPressed(Future<List<Currency>> currencies) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return FutureBuilder<List<Currency>>(
+            future: currencies,
+            builder: (context, snapshot) {
+              return snapshot.hasData
+                  ? ListView.builder(
+                      padding: const EdgeInsets.all(2.0),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, i) {
+                        return CurrencyToSelect(
+                            currency: snapshot.data![i],
+                            onClick: (currency) async {
+                              await widget.repo.setSelectedCurrency(currency);
+                              Future<List<Currency>> listCurrencies =
+                                  widget.repo.getAllCurrencies();
+                              setState(() {
+                                currencies = listCurrencies;
+                                selectedCurrency = Future.value(currency.code);
+                              });
+                            });
+                      },
+                    )
+                  : Text('${snapshot.error}');
+            },
+          );
+        });
   }
 }

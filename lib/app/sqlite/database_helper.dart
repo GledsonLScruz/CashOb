@@ -35,10 +35,9 @@ class DatabaseHelper {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute('CREATE TABLE ${Currency.TABLE} ( '
-        '${Currency.COL_ID} INTEGER PRIMARY KEY AUTOINCREMENT, '
+        '${Currency.COL_CODE} TEXT PRIMARY KEY,'
         '${Currency.COL_NAME} TEXT, '
-        '${Currency.COL_CODE} TEXT),'
         '${Currency.COL_VALUE} TEXT, '
-        '${Currency.COL_IS_SELECTED} TEXT ');
+        '${Currency.COL_REF_CODE} TEXT)');
   }
 }

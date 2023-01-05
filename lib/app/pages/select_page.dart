@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/Currency.dart';
 import '../repository/currencies_repository.dart';
@@ -38,10 +37,8 @@ class _SelectPageState extends State<SelectPage> {
                       return CurrencyToSelect(
                           currency: snapshot.data![i],
                           onClick: (currency) async {
-                            setState(() async {
-                              widget.repo.changeSelectedCurrency(currency);
-                              Modular.to.pop();
-                            });
+                            widget.repo.setSelectedCurrency(currency);
+                            Modular.to.navigate('/home');
                           });
                     },
                   )

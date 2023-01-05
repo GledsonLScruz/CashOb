@@ -15,15 +15,17 @@ class ApiCurrency {
 
     if (currencies.statusCode == 200 && values.statusCode == 200) {
       jsonDecode(currencies.body).forEach((key, value) {
-        listOfCurrencies
-            .add(Currency.fromApi(value.toString(), key.toString()));
+        listOfCurrencies.add(Currency.fromApi(
+            value.toString(), key.toString(), selectedCurrency));
       });
       Map valuesmap = jsonDecode(values.body)["rates"];
-
       for (var currency in listOfCurrencies) {
         currency.value = convertDouble(valuesmap[currency.code]);
       }
-      return listOfCurrencies;
+
+      return listOfCurrencies
+          .where((element) => element.value != null)
+          .toList();
     } else {
       throw Exception('Failed to get Currencies From API');
     }

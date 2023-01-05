@@ -13,7 +13,10 @@ class CurrencyToSelect extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onClick(currency),
-      child: Text("${currency.code} + ${currency.name}"),
+      child: SizedBox(
+          height: 150,
+          width: 150,
+          child: Text("${currency.code} + ${currency.name}")),
     );
   }
 }
