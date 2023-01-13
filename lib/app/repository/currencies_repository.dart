@@ -1,34 +1,44 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/currencies_api.dart';
 import '../model/Currency.dart';
 import '../sqlite/currency_helper.dart';
 
-class CurrenciesRepository {
-  ApiCurrency apiCurrency = ApiCurrency();
-  CurrencyHelper dbCurrency = CurrencyHelper();
+class CurrenciesRepository extends ChangeNotifier {
+  List<Currency> _currencies = [];
+  Currency _selectedCurrency = Currency();
+  final ApiCurrency _apiCurrency = ApiCurrency();
+  final CurrencyHelper _dbCurrency = CurrencyHelper();
 
-  Future<List<Currency>> getAllCurrencies() async {
-    return await getCurrenciesFromAPI();
-  }
+  List<Currency> get currencies => _currencies;
+  Currency get selectedCurrency => _selectedCurrency;
 
-  Future<String> getSelectedCurrency() async {
+  fetchCurrencies() async {
+    _currencies.clear();
+    notifyListeners();
+
     final prefs = await SharedPreferences.getInstance();
-    String currencyCode = prefs.getString('selectedCurrency')!;
-    return currencyCode;
-  }
+    final selectedCurrencyCode = prefs.getString('code') ?? 'BRL';
+    final selectedCurrencyName = prefs.getString('name') ?? 'Brazilian Real';
 
-  Future<void> setSelectedCurrency(Currency currency) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('selectedCurrency', currency.code!);
-  }
-
-  Future<List<Currency>> getCurrenciesFromAPI() async {
-    final prefs = await SharedPreferences.getInstance();
-    String selectedCurrency = prefs.getString('selectedCurrency')!;
     List<Currency> currencies =
-        await apiCurrency.getCurrencies(selectedCurrency);
-    dbCurrency.insertList(currencies);
-    return currencies;
+        await _apiCurrency.getCurrencies(selectedCurrencyCode);
+
+    await _dbCurrency.insertList(currencies);
+
+    _selectedCurrency =
+        Currency.fromApi(selectedCurrencyName, selectedCurrencyCode, '');
+    _currencies = await _dbCurrency.list(selectedCurrencyCode);
+
+    notifyListeners();
+  }
+
+  setnewcurrencie(Currency currency) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('code', currency.code!);
+    prefs.setString('name', currency.name!);
+    _selectedCurrency = currency;
+    fetchCurrencies();
   }
 }

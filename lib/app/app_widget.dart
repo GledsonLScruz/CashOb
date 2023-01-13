@@ -1,5 +1,6 @@
+import 'package:cashob/app/Utils/colors.dart';
+import 'package:cashob/app/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppWidget extends StatelessWidget {
@@ -7,15 +8,14 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       title: 'CashOb',
       theme: ThemeData(
-        primarySwatch: Colors.yellow,
+        primarySwatch: Colors.grey,
         fontFamily: GoogleFonts.roboto().fontFamily,
       ),
-      routeInformationParser: Modular.routeInformationParser,
-      routerDelegate: Modular.routerDelegate,
       debugShowCheckedModeBanner: false,
+      home: HomePage(),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -56,8 +55,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               onPressed: () async {
                 final prefs = await SharedPreferences.getInstance();
                 prefs.setBool('showHome', true);
-
-                Modular.to.navigate("/home");
               },
               child: const Text('get started'))
           : Container(

@@ -39,6 +39,8 @@ class Currency {
     };
   }
 
+  Currency() {}
+
   Currency.fromApi(String name, String code, String refCode) {
     _code = code;
     _name = name;

@@ -1,147 +1,174 @@
 // ignore_for_file: must_be_immutable
-
+import 'package:cashob/app/Utils/colors.dart';
+import 'package:cashob/app/pages/details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../model/Currency.dart';
 import '../repository/currencies_repository.dart';
-import '../widgets/home_currency_item.dart';
+import '../widgets/list_currency_home.dart';
 import '../widgets/selected_currency_item.dart';
 import '../widgets/selecting_currency_item.dart';
 
 class HomePage extends StatelessWidget {
-  final repo = Modular.get<CurrenciesRepository>();
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.white,
+            statusBarIconBrightness: Brightness.dark),
         backgroundColor: Colors.white,
-        title: const Text("CashOb", style: TextStyle(fontSize: 24)),
-        actions: [
-          GestureDetector(
-              onTap: () {
-                Modular.to.pushNamed("/about");
-              },
-              child: const Padding(
-                padding: EdgeInsets.all(3.0),
-                child: SizedBox(height: 45, width: 45, child: Icon(Icons.help)),
-              ))
-        ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              "CashOb",
+              style: TextStyle(
+                  fontSize: 18,
+                  color: CustomColors.black,
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
-      body: HomePageContent(repo: repo),
+      body: const HomePageContent(),
     ));
   }
 }
 
 class HomePageContent extends StatefulWidget {
-  CurrenciesRepository repo;
-  HomePageContent({super.key, required this.repo});
+  const HomePageContent({super.key});
 
   @override
   State<HomePageContent> createState() => _HomePageContentState();
 }
 
 class _HomePageContentState extends State<HomePageContent> {
-  late Future<List<Currency>> currencies;
-  late Future<String> selectedCurrency;
+  late List<Currency> currencies;
+  late Currency selectedCurrency;
+  late CurrenciesRepository repo;
 
   @override
   void initState() {
     super.initState();
-    currencies = widget.repo.getAllCurrencies();
-    selectedCurrency = widget.repo.getSelectedCurrency();
+    context.read<CurrenciesRepository>().fetchCurrencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    repo = context.watch<CurrenciesRepository>();
+    currencies = repo.currencies;
+    selectedCurrency = repo.selectedCurrency;
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          SizedBox(
-            height: 50,
-            child: GestureDetector(
-              onTap: () {
-                Modular.to.navigate('/select');
-              },
-              child: FutureBuilder<String>(
-                future: selectedCurrency,
-                builder: (context, snapshot) {
-                  return snapshot.hasData
-                      ? SelectedCurrency(currency: snapshot.data!)
-                      : Text('${snapshot.error}');
-                },
-              ),
-            ),
+          const Divider(),
+          SelectedCurrency(
+              currency: selectedCurrency,
+              onClick: () {
+                _onButtonPressed(context, currencies, repo);
+              }),
+          const SizedBox(
+            height: 10,
           ),
-          Flexible(
-            child: FutureBuilder<List<Currency>>(
-              future: currencies,
-              builder: (context, snapshot) {
-                return RefreshIndicator(
-                    child: _listView(snapshot),
-                    onRefresh: () async {
-                      List<Currency> listCurrencies =
-                          await widget.repo.getAllCurrencies();
-                      setState(() {
-                        currencies = Future.value(listCurrencies);
-                      });
-                    });
-              },
-            ),
-          ),
+          const Labels(),
+          const Divider(),
+          ListOfCurrencies(
+              currencies: currencies,
+              onClick: (currency) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DetailPage(
+                        currency1: selectedCurrency, currency2: currency),
+                  ),
+                );
+              })
         ],
       ),
     );
   }
+}
 
-  Widget _listView(AsyncSnapshot snapshot) {
-    if (snapshot.hasData) {
-      return ListView.builder(
-        padding: const EdgeInsets.all(2.0),
-        itemCount: snapshot.data.length,
-        itemBuilder: (context, index) {
-          return CurrencyItem(currency: snapshot.data![index]);
-        },
-      );
-    } else {
-      return const Center(
-        child: Text('Loading data...'),
-      );
-    }
+class Labels extends StatelessWidget {
+  const Labels({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          const Expanded(
+              child: Text(
+            'Flag',
+            style: TextStyle(
+                color: CustomColors.lightblack,
+                fontSize: 14,
+                fontWeight: FontWeight.w400),
+            textAlign: TextAlign.center,
+          )),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text(
+                  'Name and Acronym',
+                  style: TextStyle(
+                      color: CustomColors.lightblack,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+          ),
+          const Expanded(
+              child: Text(
+            'Value',
+            style: TextStyle(
+                color: CustomColors.lightblack,
+                fontSize: 14,
+                fontWeight: FontWeight.w400),
+            textAlign: TextAlign.center,
+          )),
+        ],
+      ),
+    );
   }
+}
 
-  void _onButtonPressed(Future<List<Currency>> currencies) {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return FutureBuilder<List<Currency>>(
-            future: currencies,
-            builder: (context, snapshot) {
-              return snapshot.hasData
-                  ? ListView.builder(
-                      padding: const EdgeInsets.all(2.0),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, i) {
-                        return CurrencyToSelect(
-                            currency: snapshot.data![i],
-                            onClick: (currency) async {
-                              await widget.repo.setSelectedCurrency(currency);
-                              Future<List<Currency>> listCurrencies =
-                                  widget.repo.getAllCurrencies();
-                              setState(() {
-                                currencies = listCurrencies;
-                                selectedCurrency = Future.value(currency.code);
-                              });
-                            });
-                      },
-                    )
-                  : Text('${snapshot.error}');
+void _onButtonPressed(BuildContext context, List<Currency> currencies,
+    CurrenciesRepository repo) {
+  showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 300,
+          child: ListView.separated(
+            itemBuilder: (BuildContext context, int moeda) {
+              return CurrencyToSelect(
+                currency: currencies[moeda],
+                onClick: (currency) {
+                  repo.setnewcurrencie(currency);
+                  Navigator.pop(context);
+                },
+              );
             },
-          );
-        });
-  }
+            padding: const EdgeInsets.all(16),
+            separatorBuilder: (_, ___) => const Divider(),
+            itemCount: currencies.length,
+          ),
+        );
+      });
 }

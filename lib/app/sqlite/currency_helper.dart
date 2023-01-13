@@ -9,7 +9,7 @@ class CurrencyHelper {
   Future<List<Currency>> list(String selectedCurrency) async {
     final db = await databaseHelper.database;
     var objects = await db!.rawQuery('SELECT * FROM ${Currency.TABLE} '
-        'WHERE ${Currency.COL_REF_CODE}=$selectedCurrency '
+        'WHERE ${Currency.COL_REF_CODE}= "$selectedCurrency" '
         'ORDER BY ${Currency.COL_NAME} COLLATE NOCASE');
     return objects.map((obj) => Currency.fromMap(obj)).toList();
   }
