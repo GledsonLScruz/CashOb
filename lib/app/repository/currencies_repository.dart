@@ -15,8 +15,10 @@ class CurrenciesRepository extends ChangeNotifier {
   Currency get selectedCurrency => _selectedCurrency;
 
   fetchCurrencies() async {
-    _currencies.clear();
-    notifyListeners();
+    if (_currencies.length > 0) {
+      _currencies.clear();
+      notifyListeners();
+    }
 
     final prefs = await SharedPreferences.getInstance();
     final selectedCurrencyCode = prefs.getString('code') ?? 'BRL';

@@ -40,6 +40,8 @@ dependencies:
   sqflite: '2.2.2'
   simple_connection_checker: '0.2.1'
   provider: ^6.0.4
+  intl: ^0.18.0
+  page_transition: ^2.0.5
 
 
 

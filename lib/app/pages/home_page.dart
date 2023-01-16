@@ -1,8 +1,10 @@
 // ignore_for_file: must_be_immutable
 import 'package:cashob/app/Utils/colors.dart';
-import 'package:cashob/app/pages/details_page.dart';
+import 'package:cashob/app/Utils/custom_transition.dart';
+import 'package:cashob/app/pages/converter_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../model/Currency.dart';
@@ -58,8 +60,8 @@ class _HomePageContentState extends State<HomePageContent> {
 
   @override
   void initState() {
-    super.initState();
     context.read<CurrenciesRepository>().fetchCurrencies();
+    super.initState();
   }
 
   @override
@@ -84,16 +86,15 @@ class _HomePageContentState extends State<HomePageContent> {
           const Labels(),
           const Divider(),
           ListOfCurrencies(
-              currencies: currencies,
-              onClick: (currency) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => DetailPage(
-                        currency1: selectedCurrency, currency2: currency),
-                  ),
-                );
-              })
+            currencies: currencies,
+            onClick: (currency) {
+              Navigator.of(context).push(createRoute(ConverterPage(
+                  currency1: selectedCurrency, currency2: currency)));
+            },
+            onSwipeDown: () {
+              repo.fetchCurrencies();
+            },
+          )
         ],
       ),
     );

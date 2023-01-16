@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cashob/app/model/Currency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,17 +8,34 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../Utils/colors.dart';
+import '../Utils/double_converter.dart';
 
-class DetailPage extends StatefulWidget {
-  Currency currency1;
-  Currency currency2;
-  DetailPage({super.key, required this.currency1, required this.currency2});
+enum ConverterDirection { c1ToC2, c2ToC1 }
+
+class ConverterPage extends StatefulWidget {
+  final Currency currency1;
+  final Currency currency2;
+  const ConverterPage(
+      {super.key, required this.currency1, required this.currency2});
 
   @override
-  State<DetailPage> createState() => _DetailPageState();
+  State<ConverterPage> createState() => _ConverterPageState();
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _ConverterPageState extends State<ConverterPage> {
+  late double multiplier;
+  final c1Controller = TextEditingController();
+  final c2Controller = TextEditingController();
+  ConverterDirection? direction;
+
+  @override
+  void initState() {
+    super.initState();
+    multiplier = widget.currency2.value!;
+    c1Controller.text = '1.0';
+    c2Controller.text = widget.currency2.value!.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,12 +78,15 @@ class _DetailPageState extends State<DetailPage> {
                   const SizedBox(
                     height: 5,
                   ),
-                  const TextField(
-                    textAlign: TextAlign.center,
+                  TextField(
+                    controller: c1Controller,
+                    onTap: () => direction = ConverterDirection.c1ToC2,
+                    keyboardType: TextInputType.number,
+                    onChanged: (String) => updateValues(),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                     ),
-                  ),
+                  )
                 ]),
               ),
               const Padding(
@@ -91,8 +113,11 @@ class _DetailPageState extends State<DetailPage> {
                   const SizedBox(
                     height: 5,
                   ),
-                  const TextField(
-                    textAlign: TextAlign.center,
+                  TextField(
+                    controller: c2Controller,
+                    onTap: () => direction = ConverterDirection.c2ToC1,
+                    keyboardType: TextInputType.number,
+                    onChanged: (String) => updateValues(),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                     ),
@@ -104,6 +129,28 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
     );
+  }
+
+  void updateValues() {
+    if (direction == null) return;
+    switch (direction) {
+      case ConverterDirection.c1ToC2:
+        setState(() {
+          c2Controller.text =
+              convertDouble(convertDouble(c1Controller.text)! * multiplier)
+                  .toString();
+        });
+        break;
+      case ConverterDirection.c2ToC1:
+        setState(() {
+          c1Controller.text =
+              convertDouble(convertDouble(c2Controller.text)! / multiplier)
+                  .toString();
+        });
+        break;
+      default:
+        break;
+    }
   }
 }
 

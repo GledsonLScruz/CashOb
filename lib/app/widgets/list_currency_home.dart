@@ -7,23 +7,26 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../model/Currency.dart';
 
-class ListOfCurrencies extends StatefulWidget {
-  List<Currency> currencies;
-  Function(Currency) onClick;
-  ListOfCurrencies(
-      {super.key, required this.currencies, required this.onClick});
+typedef void CallBackFunction(currency);
 
-  @override
-  State<ListOfCurrencies> createState() => _ListOfCurrenciesState();
-}
+class ListOfCurrencies extends StatelessWidget {
+  final List<Currency> currencies;
+  final CallBackFunction onClick;
+  final Function onSwipeDown;
+  const ListOfCurrencies(
+      {super.key,
+      required this.currencies,
+      required this.onClick,
+      required this.onSwipeDown});
 
-class _ListOfCurrenciesState extends State<ListOfCurrencies> {
   @override
   Widget build(BuildContext context) {
     return Flexible(
       child: RefreshIndicator(
-          onRefresh: () async {},
-          child: widget.currencies.isEmpty
+          onRefresh: () async {
+            onSwipeDown();
+          },
+          child: currencies.isEmpty
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
@@ -35,15 +38,12 @@ class _ListOfCurrenciesState extends State<ListOfCurrencies> {
                   ),
                   itemBuilder: (BuildContext context, int moeda) {
                     return GestureDetector(
-                        onTap: () {
-                          widget.onClick(widget.currencies[moeda]);
-                        },
-                        child:
-                            CurrencyItem(currency: widget.currencies[moeda]));
+                        onTap: () => onClick(currencies[moeda]),
+                        child: CurrencyItem(currency: currencies[moeda]));
                   },
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  itemCount: widget.currencies.length,
+                  itemCount: currencies.length,
                 )),
     );
   }

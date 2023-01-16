@@ -68,6 +68,7 @@ class _CurrencyItemState extends State<CurrencyItem> {
                 color: CustomColors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w300),
+            textAlign: TextAlign.center,
           )),
         ],
       ),

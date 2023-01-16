@@ -42,14 +42,14 @@ class _SelectedCurrencyState extends State<SelectedCurrency> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                     child: SvgPicture.asset(
-                        'assets/flags/${widget.currency.code}.svg'),
+                        'assets/flags/${widget.currency.code ?? ''}.svg'),
                   )),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 2, horizontal: 4),
                       child: Text(
-                        '${widget.currency.code}',
+                        '${widget.currency.code ?? ''}',
                         style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w300,

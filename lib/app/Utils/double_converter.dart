@@ -1,13 +1,17 @@
+import 'package:intl/intl.dart';
+
 double? convertDouble(dynamic e) {
   dynamic result;
   if (e != null) {
+    double val = 0.0;
     if (e is String) {
-      result = double.parse(e);
+      val = double.parse(e);
     } else if (e is int) {
-      result = e.toDouble();
+      val = e.toDouble();
     } else if (e is double) {
-      result = e;
+      val = e;
     }
+    result = num.parse(val.toStringAsPrecision(2)).toDouble();
   } else {
     result = null;
   }
