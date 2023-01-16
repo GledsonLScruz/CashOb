@@ -42,7 +42,15 @@ dependencies:
   provider: ^6.0.4
   intl: ^0.18.0
   page_transition: ^2.0.5
+  flutter_native_splash: ^2.0.3
+  flutter_launcher_icons: ^0.10.0
 
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: "assets/cashob_icon.svg"
+  android: true
+  ios: true
 
 
 
@@ -72,6 +80,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/
     - assets/flags/
 
   # To add assets to your application, add an assets section, like this:
