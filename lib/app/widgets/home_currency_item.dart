@@ -6,8 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../model/Currency.dart';
 
 class CurrencyItem extends StatefulWidget {
-  Currency currency;
-  CurrencyItem({super.key, required this.currency});
+  final Currency currency;
+  const CurrencyItem({super.key, required this.currency});
 
   @override
   State<CurrencyItem> createState() => _CurrencyItemState();

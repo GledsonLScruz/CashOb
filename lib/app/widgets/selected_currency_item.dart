@@ -8,9 +8,10 @@ import '../Utils/colors.dart';
 import '../model/Currency.dart';
 
 class SelectedCurrency extends StatefulWidget {
-  Currency currency;
-  Function onClick;
-  SelectedCurrency({super.key, required this.currency, required this.onClick});
+  final Currency currency;
+  final Function onClick;
+  const SelectedCurrency(
+      {super.key, required this.currency, required this.onClick});
 
   @override
   State<SelectedCurrency> createState() => _SelectedCurrencyState();

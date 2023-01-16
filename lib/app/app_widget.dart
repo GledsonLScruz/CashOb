@@ -15,7 +15,7 @@ class AppWidget extends StatelessWidget {
         fontFamily: GoogleFonts.roboto().fontFamily,
       ),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }

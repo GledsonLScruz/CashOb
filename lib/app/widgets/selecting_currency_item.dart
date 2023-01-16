@@ -8,9 +8,10 @@ import '../Utils/colors.dart';
 import '../model/Currency.dart';
 
 class CurrencyToSelect extends StatelessWidget {
-  Currency currency;
-  Function(Currency) onClick;
-  CurrencyToSelect({super.key, required this.currency, required this.onClick});
+  final Currency currency;
+  final Function(Currency) onClick;
+  const CurrencyToSelect(
+      {super.key, required this.currency, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
