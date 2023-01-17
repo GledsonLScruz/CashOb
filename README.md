@@ -1,16 +1,27 @@
-# cashob
+<p align="center">
+<img align="center" src="assets/repo/banner.png"> </p>
 
-A new Flutter project.
+## Sobre o App 📱
 
-## Getting Started
+<h3 align="center">
+CashOb é um observador e conversor de moedas!
+</h3>
 
-This project is a starting point for a Flutter application.
+## Algumas especificações 📝
+* Requisições HTTP para consumo de API REST
+* Armazenamento de dados com SQLITE
+* Criação de Splash Screen
+* Utilização de controllers
+* Injeção de Dependência
+* Gerenciamento de Estado no Flutter
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Recursos📚
+* FrankfurtAPI: https://www.frankfurter.app/
+* Flutter: https://flutter.dev/
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## **Autor - Gledson Luan**🚀
+- Linkedin: [@gledsonluan](https://www.linkedin.com/in/gledsonluan/)
+- Github: [@GledsonLScruz](https://github.com/GledsonLScruz)
+
