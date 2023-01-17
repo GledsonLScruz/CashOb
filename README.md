@@ -4,7 +4,7 @@
 ## Sobre o App 📱
 
 <h3 align="center">
-CashOb é um observador e conversor de moedas!
+CashOb ë um observador e conversor de moedas que extrai dados do Banco Central Europeu através de uma api open source.
 </h3>
 
 ## Algumas especificações 📝
