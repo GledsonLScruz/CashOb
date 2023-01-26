@@ -43,6 +43,10 @@ dependencies:
   intl: ^0.18.0
   page_transition: ^2.0.5
   flutter_native_splash: ^2.0.3
+  firebase_core: ^2.4.1
+  firebase_analytics: ^10.1.0
+  firebase_crashlytics: ^3.0.11
+  dio: ^4.0.6
 
 
 

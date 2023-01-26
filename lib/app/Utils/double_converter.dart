@@ -17,3 +17,11 @@ double? convertDouble(dynamic e) {
   }
   return result;
 }
+
+String convertString<T>(dynamic value) {
+  try {
+    return (value as String);
+  } on TypeError catch (_) {
+    return '';
+  }
+}

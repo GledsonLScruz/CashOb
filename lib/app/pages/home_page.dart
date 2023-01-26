@@ -2,6 +2,7 @@
 import 'package:cashob/app/Utils/colors.dart';
 import 'package:cashob/app/Utils/custom_transition.dart';
 import 'package:cashob/app/pages/converter_page.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
