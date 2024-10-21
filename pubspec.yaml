@@ -31,11 +31,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: '0.13.5'
+  http: 1.1.2
   smooth_page_indicator: ^1.0.0+2
   shared_preferences: ^2.0.12
   flutter_svg: '1.1.6'
-  google_fonts: ^2.1.0
+  google_fonts: 6.1.0
   path_provider: ^2.0.11
   sqflite: '2.2.2'
   simple_connection_checker: '0.2.1'
