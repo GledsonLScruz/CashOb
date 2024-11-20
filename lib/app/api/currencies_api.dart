@@ -1,8 +1,4 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../Utils/double_converter.dart';
 import '../model/Currency.dart';
@@ -16,15 +12,13 @@ class ApiCurrency {
     final values = await Dio().get('$api/latest?from=$selectedCurrency');
     if (currencies.statusCode == 200 && values.statusCode == 200) {
       currencies.data.forEach((key, value) {
-        listOfCurrencies.add(Currency.fromApi(
-            convertString(value), convertString(key), selectedCurrency));
+        listOfCurrencies.add(Currency.fromApi(convertString(value), convertString(key), selectedCurrency));
       });
       Map valuesmap = values.data["rates"];
       for (var currency in listOfCurrencies) {
         currency.value = convertDouble(valuesmap[currency.code]);
       }
-      listOfCurrencies =
-          listOfCurrencies.where((element) => element.value != null).toList();
+      listOfCurrencies = listOfCurrencies.where((element) => element.value != null).toList();
     }
     return listOfCurrencies;
   }

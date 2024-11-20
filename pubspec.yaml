@@ -31,22 +31,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: 1.1.2
-  smooth_page_indicator: ^1.0.0+2
-  shared_preferences: ^2.0.12
-  flutter_svg: '1.1.6'
-  google_fonts: 6.1.0
-  path_provider: ^2.0.11
-  sqflite: '2.2.2'
-  simple_connection_checker: '0.2.1'
-  provider: ^6.0.4
-  intl: ^0.18.0
-  page_transition: ^2.0.5
-  flutter_native_splash: ^2.0.3
-  firebase_core: ^2.4.1
-  firebase_analytics: ^10.1.0
-  firebase_crashlytics: ^3.0.11
-  dio: ^4.0.6
+  http: 1.2.2
+  smooth_page_indicator: 1.2.0+3
+  shared_preferences: 2.3.3
+  flutter_svg: 2.0.14
+  google_fonts: 6.2.1
+  path_provider: 2.1.5
+  sqflite: 2.4.1
+  simple_connection_checker: 0.2.1
+  provider: 6.1.2
+  intl: 0.18.0
+  page_transition: 2.1.0
+  flutter_native_splash: 2.4.3
+  firebase_core: 3.8.0
+  firebase_analytics: 11.3.5
+  firebase_crashlytics: 4.1.5
+  dio: 5.7.0
+  win32: ^5.8.0
 
 
 
@@ -66,7 +67,7 @@ flutter_native_splash:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: 0.14.1
 
 flutter_icons:
   android: "launcher_icon"
